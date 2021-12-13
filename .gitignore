@@ -1,6 +1,9 @@
 # jetbrains crap
 /.idea/
 
+#cmake crap
+/cmake-build-debug/
+
 # Prerequisites
 *.d
 
