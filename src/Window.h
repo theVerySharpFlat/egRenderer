@@ -7,13 +7,15 @@
 //#define GLFW_INCLUDE_NONE
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#include "types.h"
 
 class Window {
 public:
     Window(int width, int height);
     bool shouldClose();
     void shutdown();
-    void polllEvents();
+    void pollEvents();
+    const char ** getRequiredExtensions(u32* count);
     ~Window();
 private:
     GLFWwindow* m_nativeWindow;

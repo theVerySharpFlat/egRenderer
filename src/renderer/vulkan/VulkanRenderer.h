@@ -17,6 +17,17 @@ public:
 
 private:
     Window* m_window;
+
+    VkInstance m_instance;
+    void createInstance();
+
+    static const u32 requiredValidationLayerCount = 1;
+    const char* validationLayers[requiredValidationLayerCount] = {
+            "VK_LAYER_KHRONOS_validation"
+    };
+    bool checkValidationLayersSupport();
+
+    const char** getRequiredExtensions(u32* count);
 };
 
 

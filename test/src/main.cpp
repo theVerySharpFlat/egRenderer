@@ -14,7 +14,7 @@ int main() {
 
     renderer ->init(window);
     while(!window -> shouldClose()) {
-        window->polllEvents();
+        window->pollEvents();
     }
 
     delete window;

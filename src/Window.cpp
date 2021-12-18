@@ -15,8 +15,12 @@ bool Window::shouldClose() {
     return glfwWindowShouldClose(m_nativeWindow);
 }
 
-void Window::polllEvents() {
+void Window::pollEvents() {
     glfwPollEvents();
+}
+
+const char ** Window::getRequiredExtensions(u32 *count) {
+    return glfwGetRequiredInstanceExtensions(count);
 }
 
 void Window::shutdown() {

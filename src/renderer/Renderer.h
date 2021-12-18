@@ -13,6 +13,12 @@ public:
     virtual void init(Window *window) = 0;
     virtual void shutdown() = 0;
     void sayHello();
+
+#ifdef NDEBUG
+    const bool debugMessagingEnabled = false;
+#else
+    const bool debugMessagingEnabled = true;
+#endif
 };
 
 
