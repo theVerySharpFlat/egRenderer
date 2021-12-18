@@ -6,10 +6,12 @@
 #define EGRENDERER_RENDERER_H
 
 
+#include "Window.h"
+
 class Renderer {
 public:
-    Renderer(){};
-    ~Renderer(){};
+    virtual void init(Window *window) = 0;
+    virtual void shutdown() = 0;
     void sayHello();
 };
 
