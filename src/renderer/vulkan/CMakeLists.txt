@@ -1,1 +1,1 @@
-target_sources(egr PUBLIC VulkanRenderer.cpp)
+target_sources(egr PUBLIC VulkanRenderer.cpp validationLayers.cpp VulkanDevice.cpp)

@@ -6,6 +6,7 @@
 #define EGRENDERER_VULKANRENDERER_H
 
 
+#include <vector>
 #include "renderer/Renderer.h"
 #include "Window.h"
 
@@ -25,9 +26,17 @@ private:
     const char* validationLayers[requiredValidationLayerCount] = {
             "VK_LAYER_KHRONOS_validation"
     };
+    VkDebugUtilsMessengerEXT debugMessenger;
     bool checkValidationLayersSupport();
+    VkResult createDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
+                                          const VkAllocationCallbacks *pAllocate,
+                                          VkDebugUtilsMessengerEXT *pDebugMessenger);
+    void destroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger,
+                                       const VkAllocationCallbacks* pAllocate);
+    void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo);
+    void setupDebugMessenger();
 
-    const char** getRequiredExtensions(u32* count);
+    std::vector<const char *> getRequiredExtensions(u32* count);
 };
 
 

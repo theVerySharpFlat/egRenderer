@@ -8,35 +8,27 @@
 
 void VulkanRenderer::init(Window *window){
     m_window = window;
+    createInstance();
 }
 
 void VulkanRenderer::shutdown() {
+    if(debugMessagingEnabled)
+        destroyDebugUtilsMessengerEXT(m_instance, debugMessenger, nullptr);
 
+    vkDestroyInstance(m_instance, nullptr);
 }
 
-const char **VulkanRenderer::getRequiredExtensions(u32* count) {
-    return m_window -> getRequiredExtensions(count);
-}
+std::vector<const char *> VulkanRenderer::getRequiredExtensions(u32* count) {
+    u32 windowExtensionCount;
+    const char** windowExtensions = m_window->getRequiredExtensions(&windowExtensionCount);
 
-bool VulkanRenderer::checkValidationLayersSupport() {
-    u32 layerCount;
-    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+    std::vector<const char*> extensions(windowExtensions, windowExtensions + windowExtensionCount);
 
-    auto layerProperties = (VkLayerProperties*) alloca(sizeof(VkLayerProperties) * layerCount);
-    vkEnumerateInstanceLayerProperties(&layerCount, layerProperties);
-
-    for(auto & validationLayer : validationLayers) {
-        bool layerFound = false;
-        for(u32 j = 0; j < layerCount; j++) {
-            if((bool)strcmp(validationLayer, layerProperties[j].layerName)) {
-                layerFound = true;
-                break;
-            }
-        }
-        if(!layerFound)
-            return false;
+    if (debugMessagingEnabled) {
+        extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
     }
-    return true;
+
+    return extensions;
 }
 
 
@@ -63,17 +55,25 @@ void VulkanRenderer::createInstance() {
     instanceCreateInfo.flags = 0;
     instanceCreateInfo.pApplicationInfo = &applicationInfo;
 
+    VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
     if(debugMessagingEnabled) {
         instanceCreateInfo.enabledLayerCount = requiredValidationLayerCount;
         instanceCreateInfo.ppEnabledLayerNames = validationLayers;
+
+        populateDebugMessengerCreateInfo(debugCreateInfo);
+        instanceCreateInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*) &debugCreateInfo;
     } else {
         instanceCreateInfo.enabledLayerCount = 0;
     }
 
     u32 extensionCount;
-    const char** extensions = getRequiredExtensions(&extensionCount);
+    auto extensions = getRequiredExtensions(&extensionCount);
     instanceCreateInfo.enabledExtensionCount = extensionCount;
-    instanceCreateInfo.ppEnabledExtensionNames = extensions;
+    instanceCreateInfo.ppEnabledExtensionNames = extensions.data();
+
+    for(auto extension : extensions) {
+        std::cout << '\t' << extension << std::endl;
+    }
 
     if(vkCreateInstance(&instanceCreateInfo, nullptr, &m_instance) != VK_SUCCESS) {
         std::cout << "failed to create vulkan instance" << std::endl;

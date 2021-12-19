@@ -12,7 +12,7 @@ int main() {
 
     Window* window = new Window(800, 600);
 
-    renderer ->init(window);
+    renderer -> init(window);
     while(!window -> shouldClose()) {
         window->pollEvents();
     }
