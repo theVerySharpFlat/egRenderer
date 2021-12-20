@@ -15,9 +15,9 @@ public:
     void sayHello();
 
 #ifdef NDEBUG
-    const bool debugMessagingEnabled = false;
+    static const bool debugMessagingEnabled = false;
 #else
-    const bool debugMessagingEnabled = true;
+    static const bool debugMessagingEnabled = true;
 #endif
 };
 

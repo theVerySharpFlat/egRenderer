@@ -12,6 +12,8 @@ void VulkanRenderer::init(Window *window){
 }
 
 void VulkanRenderer::shutdown() {
+    delete m_device;
+
     if(debugMessagingEnabled)
         destroyDebugUtilsMessengerEXT(m_instance, debugMessenger, nullptr);
 
@@ -79,4 +81,7 @@ void VulkanRenderer::createInstance() {
         std::cout << "failed to create vulkan instance" << std::endl;
         exit(-1);
     }
+
+    //create device
+    m_device = new VulkanDevice(m_instance, validationLayers, requiredValidationLayerCount);
 }

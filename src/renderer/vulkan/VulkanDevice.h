@@ -10,11 +10,15 @@
 
 class VulkanDevice {
 public:
-    VulkanDevice(VkInstance instance);
+    VulkanDevice(VkInstance instance, const char** validationLayers, u32 validationLayerCount);
     ~VulkanDevice();
 
     struct QueueFamilyIndices {
         std::optional<uint32_t> graphicsFamily;
+
+        bool isComplete() {
+            return graphicsFamily.has_value();
+        }
     };
 
 private:
@@ -22,6 +26,12 @@ private:
 
     VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
     void pickPhysicalDevice();
+
+    VkDevice m_device;
+    void createLogicalDevice();
+
+    const char** m_validationLayers;
+    const u32 m_validationLayerCount;
 };
 
 

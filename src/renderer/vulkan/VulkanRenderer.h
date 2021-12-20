@@ -9,6 +9,7 @@
 #include <vector>
 #include "renderer/Renderer.h"
 #include "Window.h"
+#include "VulkanDevice.h"
 
 class VulkanRenderer : public Renderer{
 public:
@@ -21,6 +22,8 @@ private:
 
     VkInstance m_instance;
     void createInstance();
+
+    VulkanDevice* m_device;
 
     static const u32 requiredValidationLayerCount = 1;
     const char* validationLayers[requiredValidationLayerCount] = {
