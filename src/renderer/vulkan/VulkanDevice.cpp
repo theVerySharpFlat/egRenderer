@@ -8,10 +8,13 @@
 #include "types.h"
 #include "renderer/Renderer.h"
 
-VulkanDevice::VulkanDevice(VkInstance instance, const char** validationLayers, u32 validationLayerCount)
+VulkanDevice::VulkanDevice(VkInstance instance, const char **validationLayers, u32 validationLayerCount,
+                           VkSurfaceKHR surface)
     :m_instance(instance),
     m_validationLayerCount(validationLayerCount),
-    m_validationLayers(validationLayers) {
+    m_validationLayers(validationLayers),
+    m_surface(surface)
+    {
 
     pickPhysicalDevice();
 }
@@ -20,7 +23,7 @@ VulkanDevice::~VulkanDevice() {
     vkDestroyDevice(m_device, nullptr);
 }
 
-static VulkanDevice::QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
+VulkanDevice::QueueFamilyIndices VulkanDevice::findQueueFamilies(VkPhysicalDevice device) {
     VulkanDevice::QueueFamilyIndices indices{};
 
     u32 queueFamilyCount = 0;
@@ -35,6 +38,13 @@ static VulkanDevice::QueueFamilyIndices findQueueFamilies(VkPhysicalDevice devic
             indices.graphicsFamily = i;
         }
 
+        VkBool32 presentSupport = false;
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, m_surface, &presentSupport);
+
+        if(presentSupport) {
+            indices.presentFamily = i;
+        }
+
         if(indices.isComplete()) {
             break;
         }
@@ -43,7 +53,7 @@ static VulkanDevice::QueueFamilyIndices findQueueFamilies(VkPhysicalDevice devic
     return indices;
 }
 
-static bool isDeviceSuitable(VkPhysicalDevice device) {
+bool VulkanDevice::isDeviceSuitable(VkPhysicalDevice device) {
     VkPhysicalDeviceProperties deviceProperties;
     vkGetPhysicalDeviceProperties(device, &deviceProperties);
 

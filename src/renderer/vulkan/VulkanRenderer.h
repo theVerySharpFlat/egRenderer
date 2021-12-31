@@ -40,6 +40,11 @@ private:
     void setupDebugMessenger();
 
     std::vector<const char *> getRequiredExtensions(u32* count);
+
+    VkSurfaceKHR m_surface;
+    inline void createSurface() {m_window -> createWindowSurface(m_instance, &m_surface);}
+    inline void destroySurface() { vkDestroySurfaceKHR(m_instance, m_surface, nullptr);}
+
 };
 
 

@@ -12,10 +12,14 @@
 class Window {
 public:
     Window(int width, int height);
+
     bool shouldClose();
     void shutdown();
     void pollEvents();
+
     const char ** getRequiredExtensions(u32* count);
+    void createWindowSurface(VkInstance &instance, VkSurfaceKHR* surface);
+
     ~Window();
 private:
     GLFWwindow* m_nativeWindow;

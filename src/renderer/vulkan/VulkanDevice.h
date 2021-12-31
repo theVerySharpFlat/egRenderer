@@ -10,14 +10,16 @@
 
 class VulkanDevice {
 public:
-    VulkanDevice(VkInstance instance, const char** validationLayers, u32 validationLayerCount);
+    VulkanDevice(VkInstance instance, const char **validationLayers, u32 validationLayerCount,
+                 VkSurfaceKHR surface);
     ~VulkanDevice();
 
     struct QueueFamilyIndices {
-        std::optional<uint32_t> graphicsFamily;
+        std::optional<u32> graphicsFamily;
+        std::optional<u32> presentFamily;
 
         bool isComplete() {
-            return graphicsFamily.has_value();
+            return graphicsFamily.has_value() && presentFamily.has_value();
         }
     };
 
@@ -32,6 +34,12 @@ private:
 
     const char** m_validationLayers;
     const u32 m_validationLayerCount;
+
+    VkSurfaceKHR m_surface;
+
+    bool isDeviceSuitable(VkPhysicalDevice device);
+
+    QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 };
 
 

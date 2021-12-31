@@ -2,6 +2,7 @@
 // Created by aiden on 12/17/21.
 //
 
+#include <iostream>
 #include "Window.h"
 
 Window::Window(int width, int height) : m_height(height), m_width(width) {
@@ -21,6 +22,14 @@ void Window::pollEvents() {
 
 const char ** Window::getRequiredExtensions(u32 *count) {
     return glfwGetRequiredInstanceExtensions(count);
+}
+
+void Window::createWindowSurface(VkInstance &instance, VkSurfaceKHR *surface) {
+    auto result = glfwCreateWindowSurface(instance, m_nativeWindow, nullptr, surface);
+    if(result != VK_SUCCESS) {
+        std::cout << "failed to create window surface" << std::endl;
+        exit(-1);
+    }
 }
 
 void Window::shutdown() {

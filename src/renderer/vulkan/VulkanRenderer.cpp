@@ -9,6 +9,8 @@
 void VulkanRenderer::init(Window *window){
     m_window = window;
     createInstance();
+    createSurface();
+    m_device = new VulkanDevice(m_instance, validationLayers, requiredValidationLayerCount, m_surface);
 }
 
 void VulkanRenderer::shutdown() {
@@ -17,18 +19,20 @@ void VulkanRenderer::shutdown() {
     if(debugMessagingEnabled)
         destroyDebugUtilsMessengerEXT(m_instance, debugMessenger, nullptr);
 
+    destroySurface();
     vkDestroyInstance(m_instance, nullptr);
 }
 
 std::vector<const char *> VulkanRenderer::getRequiredExtensions(u32* count) {
     u32 windowExtensionCount;
-    const char** windowExtensions = m_window->getRequiredExtensions(&windowExtensionCount);
+    const char** windowExtensions = m_window -> getRequiredExtensions(&windowExtensionCount);
 
     std::vector<const char*> extensions(windowExtensions, windowExtensions + windowExtensionCount);
 
     if (debugMessagingEnabled) {
         extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
     }
+    *count = (u32) extensions.size();
 
     return extensions;
 }
@@ -81,7 +85,4 @@ void VulkanRenderer::createInstance() {
         std::cout << "failed to create vulkan instance" << std::endl;
         exit(-1);
     }
-
-    //create device
-    m_device = new VulkanDevice(m_instance, validationLayers, requiredValidationLayerCount);
 }
