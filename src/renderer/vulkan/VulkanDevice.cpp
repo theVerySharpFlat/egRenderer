@@ -7,6 +7,7 @@
 #include "VulkanDevice.h"
 #include "types.h"
 #include "renderer/Renderer.h"
+#include <cstring>
 
 VulkanDevice::VulkanDevice(VkInstance instance, const char **validationLayers, u32 validationLayerCount,
                            VkSurfaceKHR surface)
@@ -17,6 +18,7 @@ VulkanDevice::VulkanDevice(VkInstance instance, const char **validationLayers, u
     {
 
     pickPhysicalDevice();
+    createLogicalDevice();
 }
 
 VulkanDevice::~VulkanDevice() {
@@ -64,7 +66,13 @@ bool VulkanDevice::isDeviceSuitable(VkPhysicalDevice device) {
     VulkanDevice::QueueFamilyIndices indices = findQueueFamilies(device);
 
     //calculate if it is suitable
-    bool suitable = indices.isComplete();
+    bool hasExtensions = physicalDeviceSupportsExtensions(device);
+    if(!hasExtensions) std::cout << "device does not support required extensions" << std::endl;
+
+    bool supportsRequiredQueues = indices.isComplete();
+    if(!supportsRequiredQueues) std::cout << "device does not support required queues" << std::endl;
+
+    bool suitable = supportsRequiredQueues && hasExtensions;
 
     return suitable;
 }
@@ -106,7 +114,9 @@ void VulkanDevice::createLogicalDevice() {
     createInfo.pQueueCreateInfos = &deviceQueueCreateInfo;
     createInfo.queueCreateInfoCount = 1;
     createInfo.pEnabledFeatures = &deviceFeatures;
-    createInfo.enabledExtensionCount = 0;
+    std::cout << "physical device extension count: " << physicalDeviceExtensionCount << std::endl;
+    createInfo.enabledExtensionCount = physicalDeviceExtensionCount;
+    createInfo.ppEnabledExtensionNames = physicalDeviceExtensions;
 
     if(Renderer::debugMessagingEnabled) {
         createInfo.enabledLayerCount = m_validationLayerCount;
@@ -120,4 +130,29 @@ void VulkanDevice::createLogicalDevice() {
         exit(-1);
     }
 
+}
+
+bool VulkanDevice::physicalDeviceSupportsExtensions(VkPhysicalDevice device) {
+    u32 extensionCount;
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+
+    VkExtensionProperties* properties = (VkExtensionProperties*) alloca(sizeof(VkExtensionProperties) * extensionCount);
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, properties);
+
+    for (u32 i = 0; i < physicalDeviceExtensionCount; i++) {
+        bool extensionSupported = false;
+        for(u32 j = 0; j < extensionCount; j++) {
+            if(strcmp(physicalDeviceExtensions[i], properties[j].extensionName)) {
+                extensionSupported = true;
+            }
+        }
+        if(!extensionSupported)
+            return false;
+    }
+
+    return true;
+}
+
+VulkanDevice::QueueFamilyIndices VulkanDevice::getQueueFamilyIndices() {
+    return findQueueFamilies(m_physicalDevice);
 }

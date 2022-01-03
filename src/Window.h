@@ -20,6 +20,8 @@ public:
     const char ** getRequiredExtensions(u32* count);
     void createWindowSurface(VkInstance &instance, VkSurfaceKHR* surface);
 
+    void getFramebufferSize(int* width, int* height);
+
     ~Window();
 private:
     GLFWwindow* m_nativeWindow;

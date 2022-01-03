@@ -10,6 +10,7 @@
 #include "renderer/Renderer.h"
 #include "Window.h"
 #include "VulkanDevice.h"
+#include "VulkanSwapchain.h"
 
 class VulkanRenderer : public Renderer{
 public:
@@ -24,6 +25,8 @@ private:
     void createInstance();
 
     VulkanDevice* m_device;
+
+    VulkanSwapchain* m_swapchain;
 
     static const u32 requiredValidationLayerCount = 1;
     const char* validationLayers[requiredValidationLayerCount] = {

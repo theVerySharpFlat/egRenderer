@@ -40,3 +40,7 @@ void Window::shutdown() {
 Window::~Window() {
 
 }
+
+void Window::getFramebufferSize(int* width, int* height) {
+    glfwGetFramebufferSize(m_nativeWindow, width, height);
+}

@@ -9,6 +9,7 @@
 #include <optional>
 
 class VulkanDevice {
+
 public:
     VulkanDevice(VkInstance instance, const char **validationLayers, u32 validationLayerCount,
                  VkSurfaceKHR surface);
@@ -22,6 +23,15 @@ public:
             return graphicsFamily.has_value() && presentFamily.has_value();
         }
     };
+    QueueFamilyIndices getQueueFamilyIndices();
+
+    VkPhysicalDevice& getPhysicalDevice() {
+        return m_physicalDevice;
+
+    }
+    VkDevice& getLogicalDevice() {
+        return m_device;
+    }
 
 private:
     VkInstance m_instance;
@@ -38,6 +48,11 @@ private:
     VkSurfaceKHR m_surface;
 
     bool isDeviceSuitable(VkPhysicalDevice device);
+    static const u32 physicalDeviceExtensionCount = 1;
+    const char* physicalDeviceExtensions[physicalDeviceExtensionCount] = {
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME
+    };
+    bool physicalDeviceSupportsExtensions(VkPhysicalDevice device);
 
     QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 };

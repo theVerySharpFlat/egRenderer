@@ -10,10 +10,13 @@ void VulkanRenderer::init(Window *window){
     m_window = window;
     createInstance();
     createSurface();
-    m_device = new VulkanDevice(m_instance, validationLayers, requiredValidationLayerCount, m_surface);
+    m_device = new VulkanDevice(m_instance, validationLayers,
+                                requiredValidationLayerCount, m_surface);
+    m_swapchain = new VulkanSwapchain(m_device, m_surface, m_window);
 }
 
 void VulkanRenderer::shutdown() {
+    delete m_swapchain;
     delete m_device;
 
     if(debugMessagingEnabled)
